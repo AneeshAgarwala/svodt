@@ -151,19 +151,19 @@ species from Antarctica. We’ll build a classifier to distinguish between
 <span><span class="fu"><a href="../reference/print_svm_tree.html">print_svm_tree</a></span><span class="op">(</span><span class="va">tree_penguins</span>, </span>
 <span>               show_probabilities <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>               show_feature_info <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  Node: depth = 1 | n = 174 | features = [bill_length_mm,flipper_length_mm] | max_feat = 2 | penalty = ✓</span></span>
-<span><span class="co">#&gt;  ├ Left branch (SVM &gt; 0):</span></span>
-<span><span class="co">#&gt; │   Node: depth = 2 | n = 121 | features = [bill_length_mm,bill_depth_mm]</span></span>
-<span><span class="co">#&gt; │   ├ Left branch (SVM &gt; 0):</span></span>
-<span><span class="co">#&gt; │  │   🍃 Leaf: predict = Adelie | n = 120 | probs = [Adelie = 0.975, Chinstrap = 0.025] | features = [bill_length_mm,bill_depth_mm]</span></span>
-<span><span class="co">#&gt; │   └ Right branch (SVM ≤ 0):</span></span>
-<span><span class="co">#&gt; │      (no right child)</span></span>
-<span><span class="co">#&gt;  └ Right branch (SVM ≤ 0):</span></span>
-<span><span class="co">#&gt;     Node: depth = 2 | n = 53 | features = [bill_length_mm,bill_depth_mm]</span></span>
-<span><span class="co">#&gt;     ├ Left branch (SVM &gt; 0):</span></span>
-<span><span class="co">#&gt;     │  (no left child)</span></span>
-<span><span class="co">#&gt;     └ Right branch (SVM ≤ 0):</span></span>
-<span><span class="co">#&gt;        🍃 Leaf: predict = Chinstrap | n = 51 | probs = [Adelie = 0.02, Chinstrap = 0.98] | features = [bill_length_mm,bill_depth_mm]</span></span></code></pre></div>
+<span><span class="co">#&gt;  [Node] depth = 1 | n = 174 | features = [bill_length_mm,flipper_length_mm] | max_feat = 2 | penalty = +</span></span>
+<span><span class="co">#&gt;  |- Left branch (SVM &gt; 0):</span></span>
+<span><span class="co">#&gt; |   [Node] depth = 2 | n = 121 | features = [bill_length_mm,bill_depth_mm]</span></span>
+<span><span class="co">#&gt; |   |- Left branch (SVM &gt; 0):</span></span>
+<span><span class="co">#&gt; |  |   [Leaf] predict = Adelie | n = 120 | probs = [Adelie = 0.975, Chinstrap = 0.025] | features = [bill_length_mm,bill_depth_mm]</span></span>
+<span><span class="co">#&gt; |   `- Right branch (SVM &lt;= 0):</span></span>
+<span><span class="co">#&gt; |      (no right child)</span></span>
+<span><span class="co">#&gt;  `- Right branch (SVM &lt;= 0):</span></span>
+<span><span class="co">#&gt;     [Node] depth = 2 | n = 53 | features = [bill_length_mm,bill_depth_mm]</span></span>
+<span><span class="co">#&gt;     |- Left branch (SVM &gt; 0):</span></span>
+<span><span class="co">#&gt;     |  (no left child)</span></span>
+<span><span class="co">#&gt;     `- Right branch (SVM &lt;= 0):</span></span>
+<span><span class="co">#&gt;        [Leaf] predict = Chinstrap | n = 51 | probs = [Adelie = 0.02, Chinstrap = 0.98] | features = [bill_length_mm,bill_depth_mm]</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="make-predictions">Make Predictions<a class="anchor" aria-label="anchor" href="#make-predictions"></a>
@@ -289,14 +289,14 @@ species from Antarctica. We’ll build a classifier to distinguish between
 <span><span class="co">#&gt;    flipper_length_mm = 181 </span></span>
 <span><span class="co">#&gt;    body_mass_g = 3625 </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  ἳ3 Node 1 : features = bill_length_mm,flipper_length_mm </span></span>
+<span><span class="co">#&gt;  [Node 1 ] features = bill_length_mm,flipper_length_mm </span></span>
 <span><span class="co">#&gt;    SVM decision value: 2.0018 </span></span>
-<span><span class="co">#&gt;    → Going LEFT (decision &gt; 0)</span></span>
-<span><span class="co">#&gt;    ἳ3 Node 2 : features = bill_length_mm,bill_depth_mm </span></span>
+<span><span class="co">#&gt;    -&gt; Going LEFT (decision &gt; 0)</span></span>
+<span><span class="co">#&gt;    [Node 2 ] features = bill_length_mm,bill_depth_mm </span></span>
 <span><span class="co">#&gt;      SVM decision value: 2.5287 </span></span>
-<span><span class="co">#&gt;      → Going LEFT (decision &gt; 0)</span></span>
-<span><span class="co">#&gt;      🍃 FINAL: Predict Adelie (n = 120 )</span></span>
-<span><span class="co">#&gt;      Path taken: LEFT → LEFT </span></span>
+<span><span class="co">#&gt;      -&gt; Going LEFT (decision &gt; 0)</span></span>
+<span><span class="co">#&gt;      [FINAL] Predict Adelie (n = 120 )</span></span>
+<span><span class="co">#&gt;      Path taken: LEFT -&gt; LEFT </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Final prediction: Adelie</span></span>
 <span><span class="co">#&gt; [1] "Adelie"</span></span></code></pre></div>

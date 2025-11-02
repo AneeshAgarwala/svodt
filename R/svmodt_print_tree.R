@@ -1,7 +1,3 @@
-# `%||%` <- function(a, b) {
-#   if (is.null(a)) b else a
-# }
-
 #' Print an SVM Decision Tree
 #'
 #' Recursively prints the structure of an SVM-based decision tree.
@@ -26,11 +22,11 @@
 print_svm_tree <- function(tree, indent = "", show_probabilities = FALSE,
                            show_feature_info = TRUE, show_penalties = TRUE) {
   if (tree$is_leaf) {
-    cat(indent, "\uD83C\uDF43 Leaf: predict =", tree$prediction, "| n =", tree$n)
+    cat(indent, "[Leaf] predict =", tree$prediction, "| n =", tree$n)
 
     if (show_probabilities && !is.null(tree$class_prob)) {
       probs <- paste(names(tree$class_prob), "=", round(tree$class_prob, 3),
-        collapse = ", "
+                     collapse = ", "
       )
       cat(" | probs = [", probs, "]", sep = "")
     }
@@ -43,7 +39,7 @@ print_svm_tree <- function(tree, indent = "", show_probabilities = FALSE,
     return(invisible())
   }
 
-  cat(indent, "Node: depth =", tree$depth, "| n =", tree$n)
+  cat(indent, "[Node] depth =", tree$depth, "| n =", tree$n)
 
   if (show_feature_info) {
     cat(" | features = [", paste(tree$features, collapse = ","), "]", sep = "")
@@ -54,24 +50,24 @@ print_svm_tree <- function(tree, indent = "", show_probabilities = FALSE,
   }
 
   if (show_penalties && !is.null(tree$penalty_applied)) {
-    penalty_symbol <- if (tree$penalty_applied) "\u26A0" else "\u2713"
+    penalty_symbol <- if (tree$penalty_applied) "!" else "+"
     cat(" | penalty =", penalty_symbol)
   }
 
   cat("\n")
 
   if (!is.null(tree$left) || !is.null(tree$right)) {
-    cat(indent, "\u251C Left branch (SVM > 0):\n")
+    cat(indent, "|- Left branch (SVM > 0):\n")
     if (!is.null(tree$left)) {
       print_svm_tree(
-        tree$left, paste0(indent, "\u2502  "), show_probabilities,
+        tree$left, paste0(indent, "|  "), show_probabilities,
         show_feature_info, show_penalties
       )
     } else {
-      cat(indent, "\u2502  (no left child)\n")
+      cat(indent, "|  (no left child)\n")
     }
 
-    cat(indent, "\u2514 Right branch (SVM \u2264 0):\n")
+    cat(indent, "`- Right branch (SVM <= 0):\n")
     if (!is.null(tree$right)) {
       print_svm_tree(
         tree$right, paste0(indent, "   "), show_probabilities,
@@ -116,15 +112,15 @@ trace_prediction_path <- function(tree, sample_data, sample_idx = 1) {
 
     if (node$is_leaf) {
       cat(
-        indent, "\uD83C\uDF43 FINAL: Predict", node$prediction,
+        indent, "[FINAL] Predict", node$prediction,
         "(n =", node$n, ")\n"
       )
-      cat(indent, "Path taken:", paste(path, collapse = " \u2192 "), "\n")
+      cat(indent, "Path taken:", paste(path, collapse = " -> "), "\n")
       return(node$prediction)
     }
 
     cat(
-      indent, "Node", depth, ": features =",
+      indent, "[Node", depth, "] features =",
       paste(node$features, collapse = ","), "\n"
     )
 
@@ -139,13 +135,13 @@ trace_prediction_path <- function(tree, sample_data, sample_idx = 1) {
     cat(indent, "  SVM decision value:", round(dec_val, 4), "\n")
 
     if (dec_val > 0 && !is.null(node$left)) {
-      cat(indent, "  \u2192 Going LEFT (decision > 0)\n")
+      cat(indent, "  -> Going LEFT (decision > 0)\n")
       return(trace_path(node$left, sample, c(path, "LEFT"), depth + 1))
     } else if (dec_val <= 0 && !is.null(node$right)) {
-      cat(indent, "  \u2192 Going RIGHT (decision \u2264 0)\n")
+      cat(indent, "  -> Going RIGHT (decision <= 0)\n")
       return(trace_path(node$right, sample, c(path, "RIGHT"), depth + 1))
     } else {
-      cat(indent, "  \u26A0  No valid child node - using fallback\n")
+      cat(indent, "  [WARNING] No valid child node - using fallback\n")
       # Fallback logic here
       return("UNKNOWN")
     }
