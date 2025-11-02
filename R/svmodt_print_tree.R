@@ -124,7 +124,7 @@ trace_prediction_path <- function(tree, sample_data, sample_idx = 1) {
     }
 
     cat(
-      indent, "\u1F333 Node", depth, ": features =",
+      indent, "Node", depth, ": features =",
       paste(node$features, collapse = ","), "\n"
     )
 

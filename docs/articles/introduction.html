@@ -151,15 +151,15 @@ species from Antarctica. We’ll build a classifier to distinguish between
 <span><span class="fu"><a href="../reference/print_svm_tree.html">print_svm_tree</a></span><span class="op">(</span><span class="va">tree_penguins</span>, </span>
 <span>               show_probabilities <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>               show_feature_info <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  ἳ3 Node: depth = 1 | n = 174 | features = [bill_length_mm,flipper_length_mm] | max_feat = 2 | penalty = ✓</span></span>
+<span><span class="co">#&gt;  Node: depth = 1 | n = 174 | features = [bill_length_mm,flipper_length_mm] | max_feat = 2 | penalty = ✓</span></span>
 <span><span class="co">#&gt;  ├ Left branch (SVM &gt; 0):</span></span>
-<span><span class="co">#&gt; │   ἳ3 Node: depth = 2 | n = 121 | features = [bill_length_mm,bill_depth_mm]</span></span>
+<span><span class="co">#&gt; │   Node: depth = 2 | n = 121 | features = [bill_length_mm,bill_depth_mm]</span></span>
 <span><span class="co">#&gt; │   ├ Left branch (SVM &gt; 0):</span></span>
 <span><span class="co">#&gt; │  │   🍃 Leaf: predict = Adelie | n = 120 | probs = [Adelie = 0.975, Chinstrap = 0.025] | features = [bill_length_mm,bill_depth_mm]</span></span>
 <span><span class="co">#&gt; │   └ Right branch (SVM ≤ 0):</span></span>
 <span><span class="co">#&gt; │      (no right child)</span></span>
 <span><span class="co">#&gt;  └ Right branch (SVM ≤ 0):</span></span>
-<span><span class="co">#&gt;     ἳ3 Node: depth = 2 | n = 53 | features = [bill_length_mm,bill_depth_mm]</span></span>
+<span><span class="co">#&gt;     Node: depth = 2 | n = 53 | features = [bill_length_mm,bill_depth_mm]</span></span>
 <span><span class="co">#&gt;     ├ Left branch (SVM &gt; 0):</span></span>
 <span><span class="co">#&gt;     │  (no left child)</span></span>
 <span><span class="co">#&gt;     └ Right branch (SVM ≤ 0):</span></span>
