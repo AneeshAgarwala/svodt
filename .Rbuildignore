@@ -10,4 +10,4 @@
 ^\.github$
 ^data/pptree-data$
 ^rough-tests$
-^slides$
+^presentation-slides$
