@@ -1,0 +1,17 @@
+parsnip
+rsample
+rpart
+patchwork
+parttree
+ggplot2
+titanic
+dplyr
+tidyr
+pROC
+kernlab
+kableExtra
+sparseSVM
+e1071
+gridExtra
+RColorBrewer
+svodt
