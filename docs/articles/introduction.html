@@ -64,8 +64,7 @@
 
 
 
-      </header><script src="introduction_files/kePrint-0.0.1/kePrint.js"></script><link href="introduction_files/lightable-0.0.1/lightable.css" rel="stylesheet">
-<div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Constructing Oblique Trees with svmodt</h1>
@@ -87,11 +86,9 @@
 <p>We’ll use two datasets:</p>
 <ul>
 <li>
-<strong>Palmer Penguins</strong>: Ecological data for species
-classification</li>
+<strong>Palmer Penguins</strong>: Ecological data for species classification</li>
 <li>
-<strong>Wisconsin Breast Cancer</strong>: Medical diagnosis
-data</li>
+<strong>Wisconsin Breast Cancer</strong>: Medical diagnosis data</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -109,12 +106,11 @@ data</li>
 <span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">svmodt</span><span class="op">)</span></span></code></pre></div>
-<div class="section level2">
-<h2 id="example-1-palmer-penguins-classification">Example 1: Palmer Penguins Classification<a class="anchor" aria-label="anchor" href="#example-1-palmer-penguins-classification"></a>
+<div class="section level2" number="1">
+<h2 id="example-1-palmer-penguins-classification">
+<span class="header-section-number">1</span> Example 1: Palmer Penguins Classification<a class="anchor" aria-label="anchor" href="#example-1-palmer-penguins-classification"></a>
 </h2>
-<p>The Palmer Penguins dataset contains measurements of three penguin
-species from Antarctica. We’ll build a classifier to distinguish between
-<strong>Adelie</strong> and <strong>Chinstrap</strong> penguins.</p>
+<p>The Palmer Penguins dataset contains measurements of three penguin species from Antarctica. We’ll build a classifier to distinguish between <strong>Adelie</strong> and <strong>Chinstrap</strong> penguins.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Adelie vs Chinstrap</span></span>
 <span><span class="va">penguins_data</span> <span class="op">&lt;-</span> <span class="fu">palmerpenguins</span><span class="fu">::</span><span class="va"><a href="https://allisonhorst.github.io/palmerpenguins/reference/penguins.html" class="external-link">penguins</a></span> <span class="op">|&gt;</span></span>
@@ -130,8 +126,9 @@ species from Antarctica. We’ll build a classifier to distinguish between
 <span></span>
 <span><span class="va">train_penguins</span> <span class="op">&lt;-</span> <span class="fu">rsample</span><span class="fu">::</span><span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html" class="external-link">training</a></span><span class="op">(</span><span class="va">split_data</span><span class="op">)</span></span>
 <span><span class="va">test_penguins</span> <span class="op">&lt;-</span> <span class="fu">rsample</span><span class="fu">::</span><span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html" class="external-link">testing</a></span><span class="op">(</span><span class="va">split_data</span><span class="op">)</span></span></code></pre></div>
-<div class="section level3">
-<h3 id="train-svmodt-model">Train SVMODT Model<a class="anchor" aria-label="anchor" href="#train-svmodt-model"></a>
+<div class="section level3" number="1.1">
+<h3 id="train-svmodt-model">
+<span class="header-section-number">1.1</span> Train SVMODT Model<a class="anchor" aria-label="anchor" href="#train-svmodt-model"></a>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Train basic SVMODT</span></span>
@@ -144,8 +141,9 @@ species from Antarctica. We’ll build a classifier to distinguish between
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="examine-tree-structure">Examine Tree Structure<a class="anchor" aria-label="anchor" href="#examine-tree-structure"></a>
+<div class="section level3" number="1.2">
+<h3 id="examine-tree-structure">
+<span class="header-section-number">1.2</span> Examine Tree Structure<a class="anchor" aria-label="anchor" href="#examine-tree-structure"></a>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Print tree structure</span></span>
@@ -166,8 +164,9 @@ species from Antarctica. We’ll build a classifier to distinguish between
 <span><span class="co">#&gt;     `- Right branch (SVM &lt;= 0):</span></span>
 <span><span class="co">#&gt;        [Leaf] predict = Chinstrap | n = 51 | probs = [Adelie = 0.02, Chinstrap = 0.98] | features = [bill_length_mm,bill_depth_mm]</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="make-predictions">Make Predictions<a class="anchor" aria-label="anchor" href="#make-predictions"></a>
+<div class="section level3" number="1.3">
+<h3 id="make-predictions">
+<span class="header-section-number">1.3</span> Make Predictions<a class="anchor" aria-label="anchor" href="#make-predictions"></a>
 </h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Predict classes only</span></span>
@@ -183,84 +182,179 @@ species from Antarctica. We’ll build a classifier to distinguish between
 <span>  Predicted <span class="op">=</span> <span class="va">predictions_prob</span><span class="op">$</span><span class="va">predictions</span>,</span>
 <span>  Prob_Adelie <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">predictions_prob</span><span class="op">$</span><span class="va">probabilities</span><span class="op">[</span>, <span class="st">"Adelie"</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span>,</span>
 <span>  Prob_Chinstrap <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">predictions_prob</span><span class="op">$</span><span class="va">probabilities</span><span class="op">[</span>, <span class="st">"Chinstrap"</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span></span>
-<span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>align <span class="op">=</span> <span class="st">"lccc"</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<thead><tr class="header">
-<th align="left">Actual</th>
-<th align="center">Predicted</th>
-<th align="center">Prob_Adelie</th>
-<th align="center">Prob_Chinstrap</th>
+<span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>align <span class="op">=</span> <span class="st">"lccc"</span>, format <span class="op">=</span> <span class="st">"html"</span>, caption <span class="op">=</span> <span class="st">"SVMODT Class Predictions with Associated Probabilites on Palmerpenguins dataset"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html" class="external-link">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span>, full_width <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<table class="table table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:penguins-predict">Table 1: </span>SVMODT Class Predictions with Associated Probabilites on Palmerpenguins dataset
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+Actual
+</th>
+<th style="text-align:center;">
+Predicted
+</th>
+<th style="text-align:center;">
+Prob_Adelie
+</th>
+<th style="text-align:center;">
+Prob_Chinstrap
+</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
-<td align="left">Adelie</td>
-<td align="center">Adelie</td>
-<td align="center">0.975</td>
-<td align="center">0.025</td>
+<tr>
+<td style="text-align:left;">
+Adelie
+</td>
+<td style="text-align:center;">
+Adelie
+</td>
+<td style="text-align:center;">
+0.975
+</td>
+<td style="text-align:center;">
+0.025
+</td>
 </tr>
-<tr class="even">
-<td align="left">Adelie</td>
-<td align="center">Adelie</td>
-<td align="center">0.975</td>
-<td align="center">0.025</td>
+<tr>
+<td style="text-align:left;">
+Adelie
+</td>
+<td style="text-align:center;">
+Adelie
+</td>
+<td style="text-align:center;">
+0.975
+</td>
+<td style="text-align:center;">
+0.025
+</td>
 </tr>
-<tr class="odd">
-<td align="left">Adelie</td>
-<td align="center">Adelie</td>
-<td align="center">0.975</td>
-<td align="center">0.025</td>
+<tr>
+<td style="text-align:left;">
+Adelie
+</td>
+<td style="text-align:center;">
+Adelie
+</td>
+<td style="text-align:center;">
+0.975
+</td>
+<td style="text-align:center;">
+0.025
+</td>
 </tr>
-<tr class="even">
-<td align="left">Adelie</td>
-<td align="center">Adelie</td>
-<td align="center">0.975</td>
-<td align="center">0.025</td>
+<tr>
+<td style="text-align:left;">
+Adelie
+</td>
+<td style="text-align:center;">
+Adelie
+</td>
+<td style="text-align:center;">
+0.975
+</td>
+<td style="text-align:center;">
+0.025
+</td>
 </tr>
-<tr class="odd">
-<td align="left">Adelie</td>
-<td align="center">Adelie</td>
-<td align="center">0.975</td>
-<td align="center">0.025</td>
+<tr>
+<td style="text-align:left;">
+Adelie
+</td>
+<td style="text-align:center;">
+Adelie
+</td>
+<td style="text-align:center;">
+0.975
+</td>
+<td style="text-align:center;">
+0.025
+</td>
 </tr>
-<tr class="even">
-<td align="left">Adelie</td>
-<td align="center">Adelie</td>
-<td align="center">0.975</td>
-<td align="center">0.025</td>
+<tr>
+<td style="text-align:left;">
+Adelie
+</td>
+<td style="text-align:center;">
+Adelie
+</td>
+<td style="text-align:center;">
+0.975
+</td>
+<td style="text-align:center;">
+0.025
+</td>
 </tr>
-<tr class="odd">
-<td align="left">Adelie</td>
-<td align="center">Adelie</td>
-<td align="center">0.975</td>
-<td align="center">0.025</td>
+<tr>
+<td style="text-align:left;">
+Adelie
+</td>
+<td style="text-align:center;">
+Adelie
+</td>
+<td style="text-align:center;">
+0.975
+</td>
+<td style="text-align:center;">
+0.025
+</td>
 </tr>
-<tr class="even">
-<td align="left">Adelie</td>
-<td align="center">Adelie</td>
-<td align="center">0.975</td>
-<td align="center">0.025</td>
+<tr>
+<td style="text-align:left;">
+Adelie
+</td>
+<td style="text-align:center;">
+Adelie
+</td>
+<td style="text-align:center;">
+0.975
+</td>
+<td style="text-align:center;">
+0.025
+</td>
 </tr>
-<tr class="odd">
-<td align="left">Adelie</td>
-<td align="center">Adelie</td>
-<td align="center">0.975</td>
-<td align="center">0.025</td>
+<tr>
+<td style="text-align:left;">
+Adelie
+</td>
+<td style="text-align:center;">
+Adelie
+</td>
+<td style="text-align:center;">
+0.975
+</td>
+<td style="text-align:center;">
+0.025
+</td>
 </tr>
-<tr class="even">
-<td align="left">Adelie</td>
-<td align="center">Adelie</td>
-<td align="center">0.975</td>
-<td align="center">0.025</td>
+<tr>
+<td style="text-align:left;">
+Adelie
+</td>
+<td style="text-align:center;">
+Adelie
+</td>
+<td style="text-align:center;">
+0.975
+</td>
+<td style="text-align:center;">
+0.025
+</td>
 </tr>
 </tbody>
 </table>
+<p>Table <a href="#tab:penguins-predict">1</a> shows the predicted value along with the associated probabilities of the first 10 observations of the palmerpenguins dataset. The prediction function returns the majority class at each node along the class proportion. In this table we can observe that all the observations have been correctly predicted.</p>
 </div>
-<div class="section level3">
-<h3 id="evaluate-performance">Evaluate Performance<a class="anchor" aria-label="anchor" href="#evaluate-performance"></a>
+<div class="section level3" number="1.4">
+<h3 id="evaluate-performance">
+<span class="header-section-number">1.4</span> Evaluate Performance<a class="anchor" aria-label="anchor" href="#evaluate-performance"></a>
 </h3>
 </div>
-<div class="section level3">
-<h3 id="visualize-decision-boundaries">Visualize Decision Boundaries<a class="anchor" aria-label="anchor" href="#visualize-decision-boundaries"></a>
+<div class="section level3" number="1.5">
+<h3 id="visualize-decision-boundaries">
+<span class="header-section-number">1.5</span> Visualize Decision Boundaries<a class="anchor" aria-label="anchor" href="#visualize-decision-boundaries"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize tree decision boundaries</span></span>
@@ -273,30 +367,31 @@ species from Antarctica. We’ll build a classifier to distinguish between
 <span></span>
 <span><span class="va">viz_penguins</span><span class="op">$</span><span class="va">plots</span><span class="op">$</span><span class="va">depth_1_Root</span></span></code></pre></div>
 <div class="figure">
-<img src="introduction_files/figure-html/penguins-viz-1.png" alt="SVMODT Split at Root Node (Depth = 1)" width="768"><p class="caption">
-SVMODT Split at Root Node (Depth = 1)
+<span style="display:block;" id="fig:penguins-viz"></span>
+<img src="introduction_files/figure-html/penguins-viz-1.png" alt="SVMODT Split at Root Node (Depth = 1)"><p class="caption">
+Figure 1: SVMODT Split at Root Node (Depth = 1)
 </p>
 </div>
-<p>Fig @ref(fig:penguins-viz) depicts the root node of the SVM-based
-oblique decision tree, where the first split is performed using the
-features bill_length_mm and flipper_length_mm. The figure illustrates
-how the linear SVM at the root node divides the dataset into two
-branches, guiding samples toward subsequent child nodes.</p>
+<p>Fig <a href="#fig:penguins-viz">1</a> depicts the root node of the SVM-based oblique decision tree, where the first split is performed
+using the features bill_length_mm and flipper_length_mm. The figure illustrates how the linear SVM
+at the root node divides the dataset into two branches, guiding samples toward subsequent child
+nodes.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="va">viz_penguins</span><span class="op">$</span><span class="va">plots</span><span class="op">$</span><span class="va">`depth_2_Root_→_L`</span>, <span class="va">viz_penguins</span><span class="op">$</span><span class="va">plots</span><span class="op">$</span><span class="va">`depth_2_Root_→_R`</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="introduction_files/figure-html/penguins-viz-2-1.png" alt="SVMODT Split at Child Node (Depth = 2)" width="768"><p class="caption">
-SVMODT Split at Child Node (Depth = 2)
+<span style="display:block;" id="fig:penguins-viz-2"></span>
+<img src="introduction_files/figure-html/penguins-viz-2-1.png" alt="SVMODT Split at Child Node (Depth = 2)"><p class="caption">
+Figure 2: SVMODT Split at Child Node (Depth = 2)
 </p>
 </div>
-<p>Fig @ref(fig:penguins-viz-2) shows a node at depth 2 of the tree,
-where the SVM uses bill_length_mm and bill_depth_mm to further partition
-the data. The decision hyper-plane and sample positions are plotted,
-highlighting how oblique splits can capture multivariate relationships
-that univariate thresholds cannot.</p>
+<p>Fig <a href="#fig:penguins-viz-2">2</a> shows a node at depth 2 of the tree, where the SVM uses bill_length_mm and
+bill_depth_mm to further partition the data. The decision hyper-plane and sample positions are plotted,
+highlighting how oblique splits can capture multivariate relationships that univariate thresholds
+cannot.</p>
 </div>
-<div class="section level3">
-<h3 id="trace-prediction-path">Trace Prediction Path<a class="anchor" aria-label="anchor" href="#trace-prediction-path"></a>
+<div class="section level3" number="1.6">
+<h3 id="trace-prediction-path">
+<span class="header-section-number">1.6</span> Trace Prediction Path<a class="anchor" aria-label="anchor" href="#trace-prediction-path"></a>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/trace_prediction_path.html">trace_prediction_path</a></span><span class="op">(</span><span class="va">tree_penguins</span>, <span class="va">test_penguins</span>, sample_idx <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -321,19 +416,19 @@ that univariate thresholds cannot.</p>
 <span><span class="co">#&gt; [1] "Adelie"</span></span></code></pre></div>
 </div>
 </div>
-<div class="section level2">
-<h2 id="example-2-wisconsin-breast-cancer-diagnosis">Example 2: Wisconsin Breast Cancer Diagnosis<a class="anchor" aria-label="anchor" href="#example-2-wisconsin-breast-cancer-diagnosis"></a>
+<div class="section level2" number="2">
+<h2 id="example-2-wisconsin-breast-cancer-diagnosis">
+<span class="header-section-number">2</span> Example 2: Wisconsin Breast Cancer Diagnosis<a class="anchor" aria-label="anchor" href="#example-2-wisconsin-breast-cancer-diagnosis"></a>
 </h2>
-<div class="section level3">
-<h3 id="about-the-data">About the Data<a class="anchor" aria-label="anchor" href="#about-the-data"></a>
+<div class="section level3" number="2.1">
+<h3 id="about-the-data">
+<span class="header-section-number">2.1</span> About the Data<a class="anchor" aria-label="anchor" href="#about-the-data"></a>
 </h3>
-<p>The Wisconsin Breast Cancer dataset contains features computed from
-digitized images of fine needle aspirate (FNA) of breast masses. The
-task is to classify tumors as <strong>Benign (B)</strong> or
-<strong>Malignant (M)</strong>.</p>
+<p>The Wisconsin Breast Cancer dataset contains features computed from digitized images of fine needle aspirate (FNA) of breast masses. The task is to classify tumors as <strong>Benign (B)</strong> or <strong>Malignant (M)</strong>.</p>
 </div>
-<div class="section level3">
-<h3 id="load-and-prepare-data">Load and Prepare Data<a class="anchor" aria-label="anchor" href="#load-and-prepare-data"></a>
+<div class="section level3" number="2.2">
+<h3 id="load-and-prepare-data">
+<span class="header-section-number">2.2</span> Load and Prepare Data<a class="anchor" aria-label="anchor" href="#load-and-prepare-data"></a>
 </h3>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">234</span><span class="op">)</span></span>
@@ -343,8 +438,9 @@ task is to classify tumors as <strong>Benign (B)</strong> or
 <span><span class="va">train_wdbc</span> <span class="op">&lt;-</span> <span class="fu">rsample</span><span class="fu">::</span><span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html" class="external-link">training</a></span><span class="op">(</span><span class="va">split_data</span><span class="op">)</span></span>
 <span><span class="va">test_wdbc</span> <span class="op">&lt;-</span> <span class="fu">rsample</span><span class="fu">::</span><span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html" class="external-link">testing</a></span><span class="op">(</span><span class="va">split_data</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="train-with-class-weights">Train with Class Weights<a class="anchor" aria-label="anchor" href="#train-with-class-weights"></a>
+<div class="section level3" number="2.3">
+<h3 id="train-with-class-weights">
+<span class="header-section-number">2.3</span> Train with Class Weights<a class="anchor" aria-label="anchor" href="#train-with-class-weights"></a>
 </h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tree_wdbc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/svm_split.html">svm_split</a></span><span class="op">(</span></span>
@@ -358,14 +454,15 @@ task is to classify tumors as <strong>Benign (B)</strong> or
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="advanced-features">Advanced Features<a class="anchor" aria-label="anchor" href="#advanced-features"></a>
+<div class="section level3" number="2.4">
+<h3 id="advanced-features">
+<span class="header-section-number">2.4</span> Advanced Features<a class="anchor" aria-label="anchor" href="#advanced-features"></a>
 </h3>
-<div class="section level4">
-<h4 id="feature-selection-with-penalties">Feature Selection with Penalties<a class="anchor" aria-label="anchor" href="#feature-selection-with-penalties"></a>
+<div class="section level4" number="2.4.1">
+<h4 id="feature-selection-with-penalties">
+<span class="header-section-number">2.4.1</span> Feature Selection with Penalties<a class="anchor" aria-label="anchor" href="#feature-selection-with-penalties"></a>
 </h4>
-<p>svmodt promotes feature diversity by penalizing previously used
-features in ancestor nodes.</p>
+<p>svmodt promotes feature diversity by penalizing previously used features in ancestor nodes.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Train with feature penalty</span></span>
 <span><span class="va">tree_penalty</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/svm_split.html">svm_split</a></span><span class="op">(</span></span>
@@ -380,11 +477,11 @@ features in ancestor nodes.</p>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<div class="section level3">
-<h3 id="dynamic-feature-selection">Dynamic Feature Selection<a class="anchor" aria-label="anchor" href="#dynamic-feature-selection"></a>
+<div class="section level3" number="2.5">
+<h3 id="dynamic-feature-selection">
+<span class="header-section-number">2.5</span> Dynamic Feature Selection<a class="anchor" aria-label="anchor" href="#dynamic-feature-selection"></a>
 </h3>
-<p>The package also allows user to either randomize or decrease the
-number of features in child nodes.</p>
+<p>The package also allows user to either randomize or decrease the number of features in child nodes.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Decrease features with depth</span></span>
 <span><span class="va">tree_decrease</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/svm_split.html">svm_split</a></span><span class="op">(</span></span>
@@ -407,13 +504,11 @@ number of features in child nodes.</p>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="custom-class-weights">Custom Class Weights<a class="anchor" aria-label="anchor" href="#custom-class-weights"></a>
+<div class="section level3" number="2.6">
+<h3 id="custom-class-weights">
+<span class="header-section-number">2.6</span> Custom Class Weights<a class="anchor" aria-label="anchor" href="#custom-class-weights"></a>
 </h3>
-<p>We can also add custom class weights for our class labels in the
-model using domain expertise. This enables us to minimise classification
-of false negatives by assigning correct weights based on domain
-expertise.</p>
+<p>We can also add custom class weights for our class labels in the model using domain expertise. This enables us to minimise classification of false negatives by assigning correct weights based on domain expertise.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Give malignant cases higher weight</span></span>
 <span><span class="va">custom_weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"M"</span> <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
@@ -430,16 +525,11 @@ expertise.</p>
 <hr>
 </div>
 </div>
-<div class="section level2">
-<h2 id="model-comparison">Model Comparison<a class="anchor" aria-label="anchor" href="#model-comparison"></a>
+<div class="section level2" number="3">
+<h2 id="model-comparison">
+<span class="header-section-number">3</span> Model Comparison<a class="anchor" aria-label="anchor" href="#model-comparison"></a>
 </h2>
-<p>Now, we will compare the performance of our SVMODT model with other
-classification models such as a Linear SVM and a Decision Tree. For our
-svmodt tree we are using a tree-depth of 2 with mutual feature selection
-and penalization. For the decision tree we are setting the
-cost-complexity parameter as 0.01. Lastly, for the linear SVM model we
-have not done any hyperparameter tuning and using the default parameter
-of C = 1.</p>
+<p>Now, we will compare the performance of our SVMODT model with other classification models such as a Linear SVM and a Decision Tree. For our svmodt tree we are using a tree-depth of 2 with mutual feature selection and penalization. For the decision tree we are setting the cost-complexity parameter as 0.01. Lastly, for the linear SVM model we have not done any hyperparameter tuning and using the default parameter of C = 1.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># RPART decision tree</span></span>
 <span><span class="va">tree_rpart</span> <span class="op">&lt;-</span> <span class="fu">rpart</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html" class="external-link">rpart</a></span><span class="op">(</span><span class="va">diagnosis</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">train_wdbc</span>,</span>
@@ -473,8 +563,7 @@ of C = 1.</p>
 <span>  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html" class="external-link">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span>, full_width <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <table class="table table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
-Comparing Test set Accuracy of SVMODT model with a Linear SVM and a
-Decision Tree
+<span id="tab:comparison">Table 2: </span>Comparing Test set Accuracy of SVMODT model with a Linear SVM and a Decision Tree
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -511,9 +600,7 @@ Linear SVM
 </tr>
 </tbody>
 </table>
-<p>From Table @ref(tab:comparison) we can observe that our SVMODT model
-has outperformed both the Linear SVM model and the Rpart Decision tree
-on the test.</p>
+<p>From Table <a href="#tab:comparison">2</a> we can observe that our SVMODT model has outperformed both the Linear SVM model and the Rpart Decision tree on the test.</p>
 </div>
   </div>
 

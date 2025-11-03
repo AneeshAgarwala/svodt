@@ -3,6 +3,8 @@ title: "Constructing Oblique Trees with svmodt"
 output: 
   bookdown::html_document2:
     base_format: rmarkdown::html_vignette
+pkgdown:
+  as_is: true
 vignette: >
   %\VignetteIndexEntry{Constructing Oblique Trees with svmodt}
   %\VignetteEngine{knitr::rmarkdown}
@@ -101,8 +103,11 @@ head(data.frame(
   Predicted = predictions_prob$predictions,
   Prob_Adelie = round(predictions_prob$probabilities[, "Adelie"], 3),
   Prob_Chinstrap = round(predictions_prob$probabilities[, "Chinstrap"], 3)
-), 10) |> kableExtra::kable(align = "lccc")
+), 10) |> kableExtra::kable(align = "lccc", format = "html", caption = "SVMODT Class Predictions with Associated Probabilites on Palmerpenguins dataset") |>
+  kableExtra::kable_styling(position = "center", full_width = FALSE)
 ```
+
+Table \@ref(tab:penguins-predict) shows the predicted value along with the associated probabilities of the first 10 observations of the palmerpenguins dataset. The prediction function returns the majority class at each node along the class proportion. In this table we can observe that all the observations have been correctly predicted.  
 
 ### Evaluate Performance
 
