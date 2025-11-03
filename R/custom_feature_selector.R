@@ -1,5 +1,8 @@
-## Gini Impurity for Variable Selection
-# Impurity measures
+#' @title Gini Impurity
+#' @description Compute the Gini impurity of a vector of class labels.
+#' @param labels A vector of class labels.
+#' @return Numeric value representing the Gini impurity (0–1).
+#' @keywords internal
 gini <- function(labels) {
   if (length(labels) == 0) {
     return(0)
@@ -8,6 +11,12 @@ gini <- function(labels) {
   1 - sum(p * p)
 }
 
+
+#' @title Entropy
+#' @description Compute the entropy of a vector of class labels.
+#' @param labels A vector of class labels.
+#' @return Numeric value representing entropy in bits.
+#' @keywords internal
 entropy <- function(labels) {
   if (length(labels) == 0) {
     return(0)
@@ -16,7 +25,14 @@ entropy <- function(labels) {
   -sum(p[p > 0] * log2(p[p > 0]))
 }
 
-# Information gain on a factor split variable (2-level factor usually)
+
+#' @title Information Gain
+#' @description Compute information gain from splitting on a factor variable.
+#' @param feature Factor variable used to split data.
+#' @param target Vector of class labels.
+#' @param metric Choice of impurity metric: "entropy" or "gini".
+#' @return Numeric value of information gain.
+#' @keywords internal
 info_gain <- function(feature, target, metric = c("entropy", "gini")) {
   metric <- match.arg(metric)
   impurity_fun <- if (metric == "entropy") entropy else gini
@@ -32,7 +48,13 @@ info_gain <- function(feature, target, metric = c("entropy", "gini")) {
   parent - weighted_child
 }
 
-# Gain ratio (uses entropy for intrinsic info)
+
+#' @title Gain Ratio
+#' @description Compute gain ratio for a factor variable split.
+#' @param target Vector of class labels.
+#' @param feature_factor Factor variable used for split.
+#' @return Numeric value of gain ratio.
+#' @keywords internal
 gain_ratio <- function(target, feature_factor) {
   ig <- info_gain(feature_factor, target, metric = "entropy")
   # Intrinsic information of the split variable
@@ -46,7 +68,15 @@ gain_ratio <- function(target, feature_factor) {
 
 
 
-# Evaluate a single binary split given a feature vector and split rule
+#' @title Evaluate Split Score
+#' @description Evaluate the quality of a candidate binary split using a chosen criterion.
+#' @param target Vector of class labels.
+#' @param f Feature vector to split on.
+#' @param sp Split point (numeric threshold or factor level).
+#' @param criteria_type Splitting criterion: "gini", "info_gain", or "gain_ratio".
+#' @param ig_metric Impurity metric to use if criteria_type is "info_gain": "gini" or "entropy".
+#' @return Numeric score of the split (higher is better).
+#' @keywords internal
 .evaluate_split_score <- function(target, f, sp, criteria_type, ig_metric) {
   if (is.numeric(f)) {
     left <- f <= sp
@@ -75,7 +105,14 @@ gain_ratio <- function(target, feature_factor) {
   score
 }
 
-# Choose best feature and split point/level
+#' @title Feature Selector
+#' @description Select the best feature and split point for a binary split using the chosen criterion.
+#' @param target Vector of class labels.
+#' @param features Data frame or list of feature vectors.
+#' @param criteria_type Splitting criterion: "gini", "info_gain", or "gain_ratio".
+#' @param ig_metric Impurity metric for "info_gain": "gini" or "entropy".
+#' @return List with elements: \code{feature} (best feature name), \code{split} (split point or factor level), \code{score} (split score).
+#' @keywords internal
 feature_selector <- function(target, features,
                              criteria_type = c("gini", "info_gain", "gain_ratio"),
                              ig_metric = c("gini", "entropy")) {

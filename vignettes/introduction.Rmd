@@ -161,7 +161,7 @@ tree_wdbc <- svm_split(
 
 #### Feature Selection with Penalties
 
-svmodt promotes feature diversity by penalizing previously used features in ancestor nodes.
+svmodt promotes feature diversity by penalizing previously used features in ancestor nodes. 
 
 ```{r feature-penalty}
 # Train with feature penalty
@@ -179,7 +179,7 @@ tree_penalty <- svm_split(
 
 ### Dynamic Feature Selection
 
-The package also allows user to either randomize or decrease the number of features in child nodes 
+The package also allows user to either randomize or decrease the number of features in child nodes. 
 
 ```{r dynamic-features}
 # Decrease features with depth
@@ -206,7 +206,7 @@ tree_random <- svm_split(
 
 ### Custom Class Weights
 
-Specify custom weights for domain-specific costs:
+We can also add custom class weights for our class labels in the model using domain expertise. This enables us to minimise classification of false negatives by assigning correct weights based on domain expertise. 
 
 ```{r custom-weights}
 # Give malignant cases higher weight
@@ -227,12 +227,14 @@ tree_custom <- svm_split(
 
 ## Model Comparison
 
-### Compare SVMODT with Other Methods
+Now, we will compare the performance of our SVMODT model with other classification models such as a Linear SVM and a Decision Tree. For our svmodt tree we are using a tree-depth of 2 with mutual feature selection and penalization. For the decision tree we are setting the cost-complexity parameter as 0.01. Lastly, for the linear SVM model we have not done any hyperparameter tuning and using the default parameter of C = 1.  
 
-```{r comparison}
+
+```{r comparison, results='asis'}
+#| label: fig-compare
 # RPART decision tree
 tree_rpart <- rpart::rpart(diagnosis ~ ., data = train_wdbc,
-                   control = rpart::rpart.control(maxdepth = 4, cp = 0.01))
+                   control = rpart::rpart.control(cp = 0.01))
 pred_rpart <- predict(tree_rpart, test_wdbc, type = "class")
 
 tree_wdbc <- svm_split(data = train_wdbc,
@@ -257,7 +259,9 @@ results <- data.frame(
     mean(pred_svm == test_wdbc$diagnosis)
   )) 
 
-results |> kableExtra::kable(align = "lc")
+results |> kableExtra::kable(align = "lc", format = "html", caption = "Comparing Test set Accuracy of SVMODT model with a Linear SVM and a Decision Tree") |>
+  kableExtra::kable_styling(position = "center", full_width = FALSE)
 
 ```
 
+From Fig @fig-compare we can observe that our SVMODT model has outperformed both the Linear SVM model and the Rpart Decision tree on the test.  

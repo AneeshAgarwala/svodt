@@ -64,7 +64,8 @@
 
 
 
-      </header><div class="row">
+      </header><script src="introduction_files/kePrint-0.0.1/kePrint.js"></script><link href="introduction_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Constructing Oblique Trees with svmodt</h1>
@@ -365,7 +366,7 @@ features in ancestor nodes.</p>
 <h3 id="dynamic-feature-selection">Dynamic Feature Selection<a class="anchor" aria-label="anchor" href="#dynamic-feature-selection"></a>
 </h3>
 <p>The package also allows user to either randomize or decrease the
-number of features in child nodes</p>
+number of features in child nodes.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Decrease features with depth</span></span>
 <span><span class="va">tree_decrease</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/svm_split.html">svm_split</a></span><span class="op">(</span></span>
@@ -391,7 +392,10 @@ number of features in child nodes</p>
 <div class="section level3">
 <h3 id="custom-class-weights">Custom Class Weights<a class="anchor" aria-label="anchor" href="#custom-class-weights"></a>
 </h3>
-<p>Specify custom weights for domain-specific costs:</p>
+<p>We can also add custom class weights for our class labels in the
+model using domain expertise. This enables us to minimise classification
+of false negatives by assigning correct weights based on domain
+expertise.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Give malignant cases higher weight</span></span>
 <span><span class="va">custom_weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"M"</span> <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
@@ -411,13 +415,17 @@ number of features in child nodes</p>
 <div class="section level2">
 <h2 id="model-comparison">Model Comparison<a class="anchor" aria-label="anchor" href="#model-comparison"></a>
 </h2>
-<div class="section level3">
-<h3 id="compare-svmodt-with-other-methods">Compare SVMODT with Other Methods<a class="anchor" aria-label="anchor" href="#compare-svmodt-with-other-methods"></a>
-</h3>
+<p>Now, we will compare the performance of our SVMODT model with other
+classification models such as a Linear SVM and a Decision Tree. For our
+svmodt tree we are using a tree-depth of 2 with mutual feature selection
+and penalization. For the decision tree we are setting the
+cost-complexity parameter as 0.01. Lastly, for the linear SVM model we
+have not done any hyperparameter tuning and using the default parameter
+of C = 1.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># RPART decision tree</span></span>
 <span><span class="va">tree_rpart</span> <span class="op">&lt;-</span> <span class="fu">rpart</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html" class="external-link">rpart</a></span><span class="op">(</span><span class="va">diagnosis</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">train_wdbc</span>,</span>
-<span>                   control <span class="op">=</span> <span class="fu">rpart</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html" class="external-link">rpart.control</a></span><span class="op">(</span>maxdepth <span class="op">=</span> <span class="fl">4</span>, cp <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span></span>
+<span>                   control <span class="op">=</span> <span class="fu">rpart</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html" class="external-link">rpart.control</a></span><span class="op">(</span>cp <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">pred_rpart</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">tree_rpart</span>, <span class="va">test_wdbc</span>, type <span class="op">=</span> <span class="st">"class"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">tree_wdbc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/svm_split.html">svm_split</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train_wdbc</span>,</span>
@@ -442,28 +450,51 @@ number of features in child nodes</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">pred_svm</span> <span class="op">==</span> <span class="va">test_wdbc</span><span class="op">$</span><span class="va">diagnosis</span><span class="op">)</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> </span>
 <span></span>
-<span><span class="va">results</span> <span class="op">|&gt;</span> <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>align <span class="op">=</span> <span class="st">"lc"</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<thead><tr class="header">
-<th align="left">Model</th>
-<th align="center">Accuracy</th>
+<span><span class="va">results</span> <span class="op">|&gt;</span> <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>align <span class="op">=</span> <span class="st">"lc"</span>, format <span class="op">=</span> <span class="st">"html"</span>, caption <span class="op">=</span> <span class="st">"Comparing Test set Accuracy of SVMODT model with a Linear SVM and a Decision Tree"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html" class="external-link">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span>, full_width <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<table class="table table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Comparing Test set Accuracy of SVMODT model with a Linear SVM and a
+Decision Tree
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+Model
+</th>
+<th style="text-align:center;">
+Accuracy
+</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
-<td align="left">SVMODT</td>
-<td align="center">0.9652174</td>
+<tr>
+<td style="text-align:left;">
+SVMODT
+</td>
+<td style="text-align:center;">
+0.9652174
+</td>
 </tr>
-<tr class="even">
-<td align="left">RPART</td>
-<td align="center">0.8869565</td>
+<tr>
+<td style="text-align:left;">
+RPART
+</td>
+<td style="text-align:center;">
+0.8869565
+</td>
 </tr>
-<tr class="odd">
-<td align="left">Linear SVM</td>
-<td align="center">0.9565217</td>
+<tr>
+<td style="text-align:left;">
+Linear SVM
+</td>
+<td style="text-align:center;">
+0.9565217
+</td>
 </tr>
 </tbody>
 </table>
-</div>
+<p>From Fig <span class="citation">@fig-compare</span> we can observe
+that our SVMODT model has outperformed both the Linear SVM model and the
+Rpart Decision tree on the test.</p>
 </div>
   </div>
 

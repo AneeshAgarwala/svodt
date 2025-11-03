@@ -54,7 +54,7 @@ devtools::install_github("AneeshAgarwala/svmodt")
 library(svmodt)
 
 # Load data
-data(wdbc)  # Assuming you have this dataset
+data(wdbc)  # The package is inclusive of this dataset
 wdbc$diagnosis <- factor(wdbc$diagnosis)
 
 # Split
@@ -97,7 +97,7 @@ viz <- visualize_svm_tree(
 # Penalize previously used features to promote diversity
 tree <- svm_split(
   data = train_data,
-  response = "Species",
+  response = "diagnosis",
   max_depth = 4,
   max_features = 3,
   feature_method = "mutual",
@@ -109,10 +109,11 @@ tree <- svm_split(
 #### Dynamic Feature Selection
 
 ``` r
+set.seed(123)
 # Decrease number of features at deeper levels
 tree <- svm_split(
   data = train_data,
-  response = "Species",
+  response = "diagnosis",
   max_depth = 5,
   max_features = 10,
   max_features_strategy = "decrease",
@@ -122,7 +123,7 @@ tree <- svm_split(
 # Random feature selection at each node
 tree <- svm_split(
   data = train_data,
-  response = "Species",
+  response = "diagnosis",
   max_features_strategy = "random",
   max_features_random_range = c(0.3, 0.8)
 )
@@ -134,15 +135,16 @@ tree <- svm_split(
 # Balanced class weights
 tree <- svm_split(
   data = train_data,
-  response = "Species",
+  response = "diagnosis",
   class_weights = "balanced"
 )
 
+set.seed(123)
 # Custom class weights
-custom_weights <- c("setosa" = 1, "versicolor" = 2)
+custom_weights <- c("B" = 1, "M" = 3)
 tree <- svm_split(
   data = train_data,
-  response = "Species",
+  response = "diagnosis",
   class_weights = "custom",
   custom_class_weights = custom_weights
 )

@@ -4,52 +4,75 @@
 #' Machine (SVM) to determine the split. Supports dynamic feature selection,
 #' feature penalization, scaling, and class weighting.
 #'
-#' @param data A data frame containing predictors and response.
-#' @param response A string specifying the response column name in `data`.
-#' @param depth Integer, current recursion depth (used internally).
+#' @param data A data frame containing predictors and the response variable.
+#' @param response Character string specifying the response column in `data`.
+#'   All other columns are treated as predictors.
+#' @param depth Integer indicating the current recursion depth (used internally; default is 1).
 #' @param max_depth Maximum depth of the tree.
-#' @param min_samples Minimum number of samples required to split a node.
-#' @param max_features Maximum number of features to consider at a split.
-#' @param feature_method Feature selection method: "random", "mutual", or "cor".
-#' @param max_features_strategy Strategy to adjust max features: "constant", "random", "decrease".
-#' @param max_features_decrease_rate Decrease rate if `max_features_strategy = "decrease"`.
-#' @param max_features_random_range Numeric vector, min and max fraction if `max_features_strategy = "random"`.
-#' @param penalize_used_features Logical; if TRUE, penalize features used in ancestor nodes.
-#' @param feature_penalty_weight Numeric weight for penalization (0–1).
-#' @param used_features Character vector of features already used in ancestor nodes (internal use).
-#' @param class_weights How to handle class imbalance: "none", "balanced", "balanced_subsample", "custom".
-#' @param custom_class_weights Optional named vector of custom class weights.
-#' @param all_classes Optional character vector of all possible response classes (internal use).
-#' @param verbose Logical; if TRUE, prints node info during recursion.
-#' @param ... Additional arguments passed to underlying SVM fitting function.
+#' @param min_samples Minimum number of samples required to attempt a split.
+#' @param max_features Maximum number of features to consider at each split.
+#' @param feature_method Feature selection method at each node. One of:
+#'   \itemize{
+#'     \item `"random"`: randomly select features,
+#'     \item `"mutual"`: select based on mutual information with the response,
+#'     \item `"cor"`: select based on correlation with the response.
+#'   }
+#' @param max_features_strategy Strategy to adjust the number of features per node:
+#'   \itemize{
+#'     \item `"constant"`: keep `max_features` constant,
+#'     \item `"decrease"`: reduce features with depth,
+#'     \item `"random"`: randomly vary number of features within a range.
+#'   }
+#' @param max_features_decrease_rate Numeric fraction for decreasing features if
+#'   `max_features_strategy = "decrease"`.
+#' @param max_features_random_range Numeric vector of length 2 specifying min and max
+#'   fraction of features if `max_features_strategy = "random"`.
+#' @param penalize_used_features Logical; if TRUE, features used in ancestor nodes
+#'   are penalized to encourage diversity.
+#' @param feature_penalty_weight Numeric (0–1) weight for penalizing previously used features.
+#' @param used_features Character vector of features already used in ancestor nodes
+#'   (used internally).
+#' @param class_weights Character string specifying how to handle class imbalance. One of:
+#'   \itemize{
+#'     \item `"none"`: no weighting,
+#'     \item `"balanced"`: weight classes inversely proportional to their frequency,
+#'     \item `"balanced_subsample"`: weight per node based on local class distribution,
+#'     \item `"custom"`: use `custom_class_weights`.
+#'   }
+#' @param custom_class_weights Optional named numeric vector specifying custom weights per class.
+#' @param all_classes Optional character vector of all possible response classes (used internally).
+#' @param verbose Logical; if TRUE, prints information about each node during tree construction.
+#' @param ... Additional arguments passed to the underlying SVM fitting function.
 #'
 #' @return A nested list representing the decision tree. Each node contains:
 #' \describe{
-#'   \item{is_leaf}{Logical, TRUE if the node is a leaf.}
-#'   \item{model}{Fitted SVM model at the node (for internal nodes).}
-#'   \item{features}{Selected features at this node.}
-#'   \item{scaler}{Scaling information for the node.}
-#'   \item{left}{Left child node (decision > 0).}
-#'   \item{right}{Right child node (decision ≤ 0).}
-#'   \item{depth}{Depth of the node.}
-#'   \item{n}{Number of samples at the node.}
-#'   \item{max_features_used}{Maximum features used at this node.}
-#'   \item{penalty_applied}{Logical, whether feature penalties were applied.}
+#'   \item{is_leaf}{Logical; TRUE if the node is a leaf.}
+#'   \item{model}{Fitted SVM model at this node (for internal nodes).}
+#'   \item{features}{Vector of features selected for this node.}
+#'   \item{scaler}{Scaling information used at this node.}
+#'   \item{left}{Left child node (decision value > 0).}
+#'   \item{right}{Right child node (decision value ≤ 0).}
+#'   \item{depth}{Depth of this node in the tree.}
+#'   \item{n}{Number of samples at this node.}
+#'   \item{max_features_used}{Number of features considered at this node.}
+#'   \item{penalty_applied}{Logical; TRUE if feature penalization was applied.}
 #'   \item{class_weights_used}{Class weights applied at this node.}
 #' }
 #'
 #' @details
-#' This function recursively splits the dataset using an SVM at each node, stopping
-#' according to maximum depth, minimum samples, or pure nodes. Features can be
-#' selected randomly, by mutual information, or by correlation, and previously
-#' used features can be penalized to encourage diversity. The tree supports
-#' scaling of numeric features and flexible class weighting schemes.
+#' This function recursively splits the dataset using an SVM at each node. Splitting
+#' stops when maximum depth is reached, the node contains fewer than `min_samples`,
+#' or all samples belong to the same class. Features are scaled and selected dynamically
+#' at each node, and previously used features can be penalized to promote diversity.
+#' Class weighting schemes support handling imbalanced datasets. This approach allows
+#' construction of an **oblique decision tree**, where splits are linear hyperplanes
+#' rather than axis-aligned.
 #'
 #' @examples
-#' data(iris)
+#' data(wdbc)
 #' tree <- svm_split(
-#'   data = iris,
-#'   response = "Species",
+#'   data = wdbc,
+#'   response = "diagnosis",
 #'   max_depth = 3,
 #'   min_samples = 5,
 #'   feature_method = "random",

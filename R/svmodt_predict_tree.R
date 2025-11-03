@@ -1,35 +1,73 @@
-#' @title Predict using a Support Vector Machine based Oblique Decision Tree
+#' @title Predict Using a Support Vector Machine Oblique Decision Tree
 #' @description
 #' Predicts class labels or class probabilities for new data using a tree
 #' constructed with SVM splits. Handles leaf nodes, internal nodes, recursive traversal,
 #' and fallback mechanisms when SVM predictions or scaling fail.
 #'
-#' @param tree A tree node object (leaf or internal) created by \code{svm_split}.
-#' @param newdata A data frame of new predictor values.
-#' @param return_probs Logical; if \code{TRUE}, returns both predictions and class probabilities.
-#' @param calibrate_probs Logical; if \code{TRUE}, converts decision values to probabilities
-#'   using logistic calibration when direct SVM probabilities are unavailable.
+#' @param tree A tree node object (leaf or internal) created by \code{svm_split} or \code{svm_split_enhanced}.
+#' @param newdata A data frame of new predictor values. **Must contain the same features** as those used to fit the tree.
+#'   Any additional columns (including responses) are ignored.
+#' @param return_probs Logical; if \code{TRUE}, returns both predicted class labels and class probabilities.
+#' @param calibrate_probs Logical; if \code{TRUE}, converts SVM decision values to probabilities using logistic
+#'   calibration (sigmoid) based on the distance from the hyperplane. If \code{FALSE}, fallback probabilities
+#'   are computed from class frequencies at the leaf node.
 #'
-#' @return If \code{return_probs = FALSE}, returns a character vector of predicted class labels.
-#'   If \code{return_probs = TRUE}, returns a list with elements:
-#'   \itemize{
-#'     \item \code{predictions}: Character vector of predicted class labels.
-#'     \item \code{probabilities}: Numeric matrix of class probabilities (rows = samples, columns = classes).
-#'   }
+#' @return
+#' If \code{return_probs = FALSE}, a character vector of predicted class labels.
+#' If \code{return_probs = TRUE}, a list with elements:
+#' \itemize{
+#'   \item \code{predictions}: Character vector of predicted class labels.
+#'   \item \code{probabilities}: Numeric matrix of class probabilities
+#'     (rows = samples, columns = classes).
+#' }
 #'
 #' @details
-#' - Leaf nodes return the majority class stored in the node, along with class probabilities.
-#' - Internal nodes scale features, compute SVM decision values, and traverse left/right children.
-#' - Supports binary and multiclass SVMs (one-vs-one decision values for multiclass).
-#' - If feature scaling fails or child nodes are missing, predictions are generated using:
-#'   1. SVM-provided probabilities.
-#'   2. Calibrated decision values (sigmoid/logistic conversion).
-#'   3. Training class distribution or uniform probabilities as a last resort.
-#' - Probabilities are normalized to sum to 1 for each sample.
+#' The function traverses the SVM-based oblique decision tree recursively and predicts class labels or probabilities. Key behaviors:
+#' \itemize{
+#'   \item \strong{Leaf nodes:} Return the majority class stored in the node, along with class probabilities.
+#'   \item \strong{Internal nodes:}
+#'     \itemize{
+#'       \item Scale features according to the node’s scaling parameters.
+#'       \item Compute SVM decision values.
+#'       \item Recursively traverse left and right children depending on the sign of the decision value.
+#'     }
+#'   \item \strong{Binary support:}
+#'     \itemize{
+#'       \item Binary SVMs produce a single decision value per node.
+#'     }
+#'   \item \strong{Fallback predictions:} If scaling fails, SVM predictions are unavailable, or child nodes are missing, predictions are generated in this order:
+#'     \itemize{
+#'       \item SVM-provided probabilities (if available).
+#'       \item Calibrated decision values using a logistic/sigmoid function (if \code{calibrate_probs = TRUE}).
+#'       \item Leaf node class distribution (empirical frequencies) or uniform probabilities as a last resort.
+#'     }
+#'   \item \strong{Probability normalization:} All returned probabilities are normalized so that each row sums to 1.
+#'   \item \strong{Feature requirement:} \code{newdata} must contain exactly the features used to train the tree; any extra columns, including responses, are ignored.
+#'   \item \strong{Calibration behavior:}
+#'     \itemize{
+#'       \item \code{calibrate_probs = FALSE} returns class frequencies at the leaf node.
+#'       \item \code{calibrate_probs = TRUE} uses the distance from the hyperplane for logistic post-processing into probabilities.
+#'     }
+#' }
 #'
 #' @examples
 #' \dontrun{
-#' preds <- svm_predict_tree(tree, newdata = test_data, return_probs = TRUE)
+#' # Train DTSVM tree
+#' tree <- svm_split_enhanced(
+#'   data = wdbc,
+#'   response = "diagnosis",
+#'   max_depth = 3,
+#'   max_features = 2,
+#'   feature_method = "cor",
+#'   class_weights = "balanced_subsample"
+#' )
+#'
+#' # Predict on WDBC data
+#' preds <- predict_svm_tree(tree, newdata = wdbc)
+#'
+#' # Predict with probabilities and logistic calibration
+#' result <- predict_svm_tree(tree, newdata = wdbc,
+#'                            return_probs = TRUE, calibrate_probs = TRUE)
 #' }
 #' @export
 svm_predict_tree <- function(tree, newdata, return_probs = FALSE,

@@ -101,7 +101,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">svmodt</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Load data</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">wdbc</span><span class="op">)</span>  <span class="co"># Assuming you have this dataset</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">wdbc</span><span class="op">)</span>  <span class="co"># The package is inclusive of this dataset</span></span>
 <span><span class="va">wdbc</span><span class="op">$</span><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">wdbc</span><span class="op">$</span><span class="va">diagnosis</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Split</span></span>
@@ -144,7 +144,7 @@
 <code class="sourceCode R"><span><span class="co"># Penalize previously used features to promote diversity</span></span>
 <span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/svm_split.html">svm_split</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">train_data</span>,</span>
-<span>  response <span class="op">=</span> <span class="st">"Species"</span>,</span>
+<span>  response <span class="op">=</span> <span class="st">"diagnosis"</span>,</span>
 <span>  max_depth <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  max_features <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  feature_method <span class="op">=</span> <span class="st">"mutual"</span>,</span>
@@ -156,10 +156,11 @@
 <h4 id="dynamic-feature-selection">Dynamic Feature Selection<a class="anchor" aria-label="anchor" href="#dynamic-feature-selection"></a>
 </h4>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Decrease number of features at deeper levels</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="co"># Decrease number of features at deeper levels</span></span>
 <span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/svm_split.html">svm_split</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">train_data</span>,</span>
-<span>  response <span class="op">=</span> <span class="st">"Species"</span>,</span>
+<span>  response <span class="op">=</span> <span class="st">"diagnosis"</span>,</span>
 <span>  max_depth <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  max_features <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  max_features_strategy <span class="op">=</span> <span class="st">"decrease"</span>,</span>
@@ -169,7 +170,7 @@
 <span><span class="co"># Random feature selection at each node</span></span>
 <span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/svm_split.html">svm_split</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">train_data</span>,</span>
-<span>  response <span class="op">=</span> <span class="st">"Species"</span>,</span>
+<span>  response <span class="op">=</span> <span class="st">"diagnosis"</span>,</span>
 <span>  max_features_strategy <span class="op">=</span> <span class="st">"random"</span>,</span>
 <span>  max_features_random_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.8</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -181,15 +182,16 @@
 <code class="sourceCode R"><span><span class="co"># Balanced class weights</span></span>
 <span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/svm_split.html">svm_split</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">train_data</span>,</span>
-<span>  response <span class="op">=</span> <span class="st">"Species"</span>,</span>
+<span>  response <span class="op">=</span> <span class="st">"diagnosis"</span>,</span>
 <span>  class_weights <span class="op">=</span> <span class="st">"balanced"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span><span class="co"># Custom class weights</span></span>
-<span><span class="va">custom_weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"setosa"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"versicolor"</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">custom_weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"M"</span> <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/svm_split.html">svm_split</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">train_data</span>,</span>
-<span>  response <span class="op">=</span> <span class="st">"Species"</span>,</span>
+<span>  response <span class="op">=</span> <span class="st">"diagnosis"</span>,</span>
 <span>  class_weights <span class="op">=</span> <span class="st">"custom"</span>,</span>
 <span>  custom_class_weights <span class="op">=</span> <span class="va">custom_weights</span></span>
 <span><span class="op">)</span></span></code></pre></div>
