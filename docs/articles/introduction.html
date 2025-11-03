@@ -272,10 +272,28 @@ species from Antarctica. We’ll build a classifier to distinguish between
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">viz_penguins</span><span class="op">$</span><span class="va">plots</span><span class="op">$</span><span class="va">depth_1_Root</span></span></code></pre></div>
-<p><img src="introduction_files/figure-html/penguins-viz-1.png" width="768"></p>
+<div class="figure">
+<img src="introduction_files/figure-html/penguins-viz-1.png" alt="SVMODT Split at Root Node (Depth = 1)" width="768"><p class="caption">
+SVMODT Split at Root Node (Depth = 1)
+</p>
+</div>
+<p>Fig @ref(fig:penguins-viz) depicts the root node of the SVM-based
+oblique decision tree, where the first split is performed using the
+features bill_length_mm and flipper_length_mm. The figure illustrates
+how the linear SVM at the root node divides the dataset into two
+branches, guiding samples toward subsequent child nodes.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="va">viz_penguins</span><span class="op">$</span><span class="va">plots</span><span class="op">$</span><span class="va">`depth_2_Root_→_L`</span>, <span class="va">viz_penguins</span><span class="op">$</span><span class="va">plots</span><span class="op">$</span><span class="va">`depth_2_Root_→_R`</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<div class="figure">
+<img src="introduction_files/figure-html/penguins-viz-2-1.png" alt="SVMODT Split at Child Node (Depth = 2)" width="768"><p class="caption">
+SVMODT Split at Child Node (Depth = 2)
+</p>
+</div>
+<p>Fig @ref(fig:penguins-viz-2) shows a node at depth 2 of the tree,
+where the SVM uses bill_length_mm and bill_depth_mm to further partition
+the data. The decision hyper-plane and sample positions are plotted,
+highlighting how oblique splits can capture multivariate relationships
+that univariate thresholds cannot.</p>
 </div>
 <div class="section level3">
 <h3 id="trace-prediction-path">Trace Prediction Path<a class="anchor" aria-label="anchor" href="#trace-prediction-path"></a>
@@ -450,7 +468,8 @@ of C = 1.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">pred_svm</span> <span class="op">==</span> <span class="va">test_wdbc</span><span class="op">$</span><span class="va">diagnosis</span><span class="op">)</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> </span>
 <span></span>
-<span><span class="va">results</span> <span class="op">|&gt;</span> <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>align <span class="op">=</span> <span class="st">"lc"</span>, format <span class="op">=</span> <span class="st">"html"</span>, caption <span class="op">=</span> <span class="st">"Comparing Test set Accuracy of SVMODT model with a Linear SVM and a Decision Tree"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="va">results</span> <span class="op">|&gt;</span> <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>align <span class="op">=</span> <span class="st">"lc"</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>                             caption <span class="op">=</span> <span class="st">"Comparing Test set Accuracy of SVMODT model with a Linear SVM and a Decision Tree"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html" class="external-link">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span>, full_width <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <table class="table table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
@@ -471,7 +490,7 @@ Accuracy
 SVMODT
 </td>
 <td style="text-align:center;">
-0.9652174
+0.9652
 </td>
 </tr>
 <tr>
@@ -479,7 +498,7 @@ SVMODT
 RPART
 </td>
 <td style="text-align:center;">
-0.8869565
+0.8870
 </td>
 </tr>
 <tr>
@@ -487,14 +506,14 @@ RPART
 Linear SVM
 </td>
 <td style="text-align:center;">
-0.9565217
+0.9565
 </td>
 </tr>
 </tbody>
 </table>
-<p>From Fig <span class="citation">@fig-compare</span> we can observe
-that our SVMODT model has outperformed both the Linear SVM model and the
-Rpart Decision tree on the test.</p>
+<p>From Table @ref(tab:comparison) we can observe that our SVMODT model
+has outperformed both the Linear SVM model and the Rpart Decision tree
+on the test.</p>
 </div>
   </div>
 

@@ -1,6 +1,8 @@
 ---
 title: "Constructing Oblique Trees with svmodt"
-output: rmarkdown::html_vignette
+output: 
+  bookdown::html_document2:
+    base_format: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Constructing Oblique Trees with svmodt}
   %\VignetteEngine{knitr::rmarkdown}
@@ -107,6 +109,7 @@ head(data.frame(
 ### Visualize Decision Boundaries
 
 ```{r penguins-viz, fig.height=6, fig.width=8}
+#| fig-cap: SVMODT Split at Root Node (Depth = 1)
 # Visualize tree decision boundaries
 viz_penguins <- visualize_svm_tree(
   tree = tree_penguins,
@@ -117,10 +120,19 @@ viz_penguins <- visualize_svm_tree(
 
 viz_penguins$plots$depth_1_Root
 ```
+Fig \@ref(fig:penguins-viz) depicts the root node of the SVM-based oblique decision tree, where the first split is performed
+using the features bill_length_mm and flipper_length_mm. The figure illustrates how the linear SVM
+at the root node divides the dataset into two branches, guiding samples toward subsequent child
+nodes.
 
-```{r}
+```{r penguins-viz-2, fig.height=6, fig.width=8}
+#| fig-cap: SVMODT Split at Child Node (Depth = 2)
 gridExtra::grid.arrange(viz_penguins$plots$`depth_2_Root_→_L`, viz_penguins$plots$`depth_2_Root_→_R`, ncol = 2)
 ```
+Fig \@ref(fig:penguins-viz-2) shows a node at depth 2 of the tree, where the SVM uses bill_length_mm and
+bill_depth_mm to further partition the data. The decision hyper-plane and sample positions are plotted,
+highlighting how oblique splits can capture multivariate relationships that univariate thresholds
+cannot.
 
 ### Trace Prediction Path
 ```{r penguins-trace}
@@ -230,8 +242,7 @@ tree_custom <- svm_split(
 Now, we will compare the performance of our SVMODT model with other classification models such as a Linear SVM and a Decision Tree. For our svmodt tree we are using a tree-depth of 2 with mutual feature selection and penalization. For the decision tree we are setting the cost-complexity parameter as 0.01. Lastly, for the linear SVM model we have not done any hyperparameter tuning and using the default parameter of C = 1.  
 
 
-```{r comparison, results='asis'}
-#| label: fig-compare
+```{r comparison}
 # RPART decision tree
 tree_rpart <- rpart::rpart(diagnosis ~ ., data = train_wdbc,
                    control = rpart::rpart.control(cp = 0.01))
@@ -259,9 +270,10 @@ results <- data.frame(
     mean(pred_svm == test_wdbc$diagnosis)
   )) 
 
-results |> kableExtra::kable(align = "lc", format = "html", caption = "Comparing Test set Accuracy of SVMODT model with a Linear SVM and a Decision Tree") |>
+results |> kableExtra::kable(align = "lc", format = "html", digits = 4,
+                             caption = "Comparing Test set Accuracy of SVMODT model with a Linear SVM and a Decision Tree") |>
   kableExtra::kable_styling(position = "center", full_width = FALSE)
 
 ```
 
-From Fig @fig-compare we can observe that our SVMODT model has outperformed both the Linear SVM model and the Rpart Decision tree on the test.  
+From Table \@ref(tab:comparison) we can observe that our SVMODT model has outperformed both the Linear SVM model and the Rpart Decision tree on the test.  
