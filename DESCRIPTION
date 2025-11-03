@@ -33,6 +33,7 @@ LazyData: true
 Suggests: 
     knitr,
     rmarkdown,
+    bookdown,
     testthat (>= 3.0.0),
     rpart,
     rsample,
