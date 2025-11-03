@@ -31,8 +31,9 @@ Recursively prints the structure of an SVM-based decision tree.
 }
 \examples{
 tree <- svm_split(
-  data = iris,
-  response = "Species",
+  data = wdbc,
+  response = "diagnosis",
+  max_features = 2,
   max_depth = 3,
   min_samples = 5,
   feature_method = "random",
