@@ -14,6 +14,7 @@ stree_split(
   impurity_measure = c("entropy", "gini"),
   verbose = FALSE,
   all_classes = NULL,
+  max_features = NULL,
   ...
 )
 }

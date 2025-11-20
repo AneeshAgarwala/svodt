@@ -20,7 +20,7 @@
 stree_split <- function(data, response, depth = 1, max_depth = 5,
                         min_samples = 5, kernel = c("linear", "polynomial", "radial"),
                         impurity_measure = c("entropy", "gini"),
-                        verbose = FALSE, all_classes = NULL, ...) {
+                        verbose = FALSE, all_classes = NULL, max_features = NULL, ...) {
 
   kernel <- match.arg(kernel)
   impurity_measure <- match.arg(impurity_measure)
@@ -37,6 +37,37 @@ stree_split <- function(data, response, depth = 1, max_depth = 5,
 
   y <- data[[response]]
   n <- nrow(data)
+
+  # Determine features
+  feature_names <- setdiff(names(data), response)
+  n_features <- length(feature_names)
+
+
+  # Compute max_features based on user specification
+  if (is.null(max_features)) {
+    m_features <- n_features
+  } else if (is.character(max_features)) {
+    if (max_features %in% c("auto", "sqrt")) {
+      m_features <- max(1, floor(sqrt(n_features)))
+    } else if (max_features == "log2") {
+      m_features <- max(1, floor(log2(n_features)))
+    } else {
+      stop("Invalid max_features string option")
+    }
+  } else if (is.numeric(max_features)) {
+    if (max_features > 1) {
+      m_features <- min(n_features, as.integer(max_features))
+    } else if (max_features > 0 && max_features <= 1) {
+      m_features <- max(1, as.integer(max_features * n_features))
+    } else {
+      stop("Invalid numeric max_features value")
+    }
+  } else {
+    stop("Invalid max_features argument")
+  }
+
+  # Randomly sample selected features
+  selected_features <- sample(feature_names, m_features)
 
   if (verbose) {
     cat("\n--- STree Node at depth", depth, "---\n")
@@ -59,7 +90,7 @@ stree_split <- function(data, response, depth = 1, max_depth = 5,
 
   # Prepare feature matrix (exclude response)
   feature_names <- setdiff(names(data), response)
-  X <- data[, feature_names, drop = FALSE]
+  X <- data[, selected_features, drop = FALSE]
 
   # Binary case: k = 2
   if (k == 2) {
@@ -83,19 +114,19 @@ stree_split <- function(data, response, depth = 1, max_depth = 5,
     left_child <- stree_split(
       data[left_idx, , drop = FALSE], response,
       depth + 1, max_depth, min_samples, kernel,
-      impurity_measure, verbose, all_classes, ...
+      impurity_measure, verbose, all_classes, max_features,...
     )
 
     right_child <- stree_split(
       data[right_idx, , drop = FALSE], response,
       depth + 1, max_depth, min_samples, kernel,
-      impurity_measure, verbose, all_classes, ...
+      impurity_measure, verbose, all_classes,  max_features,...
     )
 
     return(list(
       is_leaf = FALSE,
       model = result$model,
-      features = feature_names,
+      features = selected_features,
       hyperplane_class = NULL,  # Not applicable for binary
       left = left_child,
       right = right_child,
@@ -178,19 +209,19 @@ stree_split <- function(data, response, depth = 1, max_depth = 5,
   left_child <- stree_split(
     data[best_left_idx, , drop = FALSE], response,
     depth + 1, max_depth, min_samples, kernel,
-    impurity_measure, verbose, all_classes, ...
+    impurity_measure, verbose, all_classes,  max_features,...
   )
 
   right_child <- stree_split(
     data[best_right_idx, , drop = FALSE], response,
     depth + 1, max_depth, min_samples, kernel,
-    impurity_measure, verbose, all_classes, ...
+    impurity_measure, verbose, all_classes,  max_features,...
   )
 
   return(list(
     is_leaf = FALSE,
     model = best_model,
-    features = feature_names,
+    features = selected_features,
     hyperplane_class = best_class,  # Store which class was selected
     left = left_child,
     right = right_child,
