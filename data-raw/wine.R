@@ -15,6 +15,7 @@ wine <- read.csv("D:/SVMODT/project-svodt/data-raw/wine.data",
                    "hue",
                    "od280_od315_of_diluted_wines",
                    "proline"
-                 ))
+                 )) |>
+  mutate(class = as.factor(class))
 
 usethis::use_data(wine, overwrite = TRUE)

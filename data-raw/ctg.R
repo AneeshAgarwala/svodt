@@ -1,4 +1,4 @@
-ctg <- read_excel("data-raw/CTG.xls", sheet = "Data", .name_repair = "universal")
+ctg <- readxl::read_excel("data-raw/CTG.xls", sheet = "Data", .name_repair = "universal")
 
 ctg <- ctg |>
   dplyr::select(LB,
@@ -11,6 +11,8 @@ ctg <- ctg |>
                 ASTV:Tendency,
                 CLASS,
                 NSP) |>
-  na.omit()
+  na.omit() |>
+  mutate(CLASS = as.factor(CLASS),
+         NSP = as.factor(NSP))
 
 usethis::use_data(ctg, overwrite = TRUE)
