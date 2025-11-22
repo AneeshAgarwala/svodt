@@ -53,6 +53,13 @@ train_stree_default <- function(data, response) {
   )
 }
 
+train_svmodt_default <- function(data, response){
+  svmodt::svm_split(
+    data = data,
+    response = response,
+    feature_method = "mutual")
+}
+
 # Optimized STree for each dataset
 train_stree_wdbc <- function(data, response) {
   stree_split(
@@ -178,6 +185,10 @@ train_stree_aus_credit <- function(data, response) {
 # Prediction function
 predict_stree <- function(model, newdata) {
   stree_predict(model, newdata)
+}
+
+predict_svmodt <- function(model, newdata){
+  svm_predict_tree(model, newdata)
 }
 
 
@@ -446,30 +457,148 @@ cat("Ionosphere:     ", round(mean(opt_stat_ionosphere), 4), "\n")
 cat("Dermatology:    ", round(mean(opt_stat_dermatology), 4), "\n")
 cat("Aus Credit:     ", round(mean(opt_stat_aus_credit), 4), "\n")
 
+
+# RUN3: SVMODT ALGORITHM
+stat_svmodt_wdbc <- rep(NA, 10)
+stat_svmodt_iris <- rep(NA, 10)
+stat_svmodt_echocardiogram <- rep(NA, 10)
+stat_svmodt_fertility <- rep(NA, 10)
+stat_svmodt_wine <- rep(NA, 10)
+stat_svmodt_ctg3 <- rep(NA, 10)
+stat_svmodt_ctg10 <- rep(NA, 10)
+stat_svmodt_ionosphere <- rep(NA, 10)
+stat_svmodt_dermatology <- rep(NA, 10)
+stat_svmodt_aus_credit <- rep(NA, 10)
+
+for(i in 1:10){
+  cat("Iteration", i, "- Default\n")
+
+  set.seed(seed_list[i])
+  ## WDBC
+  cv_wdbc <- run_kfold_cv(
+    data = wdbc,
+    response = "diagnosis",
+    k = 5,
+    train_fun = train_svmodt_default,
+    predict_fun = predict_svmodt
+  )
+  stat_svmodt_wdbc[i] <- mean(cv_wdbc$accuracy)
+
+  ## IRIS
+  cv_iris <- run_kfold_cv(
+    data = iris,
+    response = "Species",
+    k = 5,
+    train_fun = train_svmodt_default,
+    predict_fun = predict_svmodt
+  )
+  stat_svmodt_iris[i] <- mean(cv_iris$accuracy)
+
+  ## ECHOCARDIOGRAM
+  cv_echo <- run_kfold_cv(
+    data = echocardiogram,
+    response = "still_alive",
+    k = 5,
+    train_fun = train_svmodt_default,
+    predict_fun = predict_svmodt
+  )
+  stat_svmodt_echocardiogram[i] <- mean(cv_echo$accuracy)
+
+  ## FERTILITY
+  cv_fert <- run_kfold_cv(
+    data = fertility,
+    response = "diagnosis",
+    k = 5,
+    train_fun = train_svmodt_default,
+    predict_fun = predict_svmodt
+  )
+  stat_svmodt_fertility[i] <- mean(cv_fert$accuracy)
+
+  ## WINE
+  cv_wine <- run_kfold_cv(
+    data = wine,
+    response = "class",
+    k = 5,
+    train_fun = train_svmodt_default,
+    predict_fun = predict_svmodt
+  )
+  stat_svmodt_wine[i] <- mean(cv_wine$accuracy)
+
+  ## CTG3
+  cv_ctg3 <- run_kfold_cv(
+    data = ctg3,
+    response = "NSP",
+    k = 5,
+    train_fun = train_svmodt_default,
+    predict_fun = predict_svmodt
+  )
+  stat_svmodt_ctg3[i] <- mean(cv_ctg3$accuracy)
+
+  ## CTG10
+  cv_ctg10 <- run_kfold_cv(
+    data = ctg10,
+    response = "CLASS",
+    k = 5,
+    train_fun = train_svmodt_default,
+    predict_fun = predict_svmodt
+  )
+  stat_svmodt_ctg10[i] <- mean(cv_ctg10$accuracy)
+
+  ## IONOSPHERE
+  cv_ionosphere <- run_kfold_cv(
+    data = ionosphere,
+    response = "Class",
+    k = 5,
+    train_fun = train_svmodt_default,
+    predict_fun = predict_svmodt
+  )
+  stat_svmodt_ionosphere[i] <- mean(cv_ionosphere$accuracy)
+
+  ## DERMATOLOGY
+  cv_dermatology <- run_kfold_cv(
+    data = dermatology,
+    response = "class",
+    k = 5,
+    train_fun = train_svmodt_default,
+    predict_fun = predict_svmodt
+  )
+  stat_svmodt_dermatology[i] <- mean(cv_dermatology$accuracy)
+
+  ## AUSTRALIAN CREDIT
+  cv_aus_credit <- run_kfold_cv(
+    data = australian_credit,
+    response = "A15",
+    k = 5,
+    train_fun = train_svmodt_default,
+    predict_fun = predict_svmodt
+  )
+  stat_svmodt_aus_credit[i] <- mean(cv_aus_credit$accuracy)
+}
+
 # ------------------------------------------------------
 # COMPARISON TABLE
 # ------------------------------------------------------
 cat("\n========== COMPARISON: DEFAULT VS OPTIMIZED ==========\n")
-comparison <- data.frame(
+svmodt_results <- data.frame(
   Dataset = c("WDBC", "Iris", "Echocardiogram", "Fertility", "Wine",
               "CTG3", "CTG10", "Ionosphere", "Dermatology", "Aus Credit"),
-  Default = round(c(mean(stat_wdbc), mean(stat_iris), mean(stat_echocardiogram),
-                    mean(stat_fertility), mean(stat_wine), mean(stat_ctg3),
-                    mean(stat_ctg10), mean(stat_ionosphere), mean(stat_dermatology),
-                    mean(stat_aus_credit)), 4),
-  Optimized = round(c(mean(opt_stat_wdbc), mean(opt_stat_iris), mean(opt_stat_echocardiogram),
-                      mean(opt_stat_fertility), mean(opt_stat_wine), mean(opt_stat_ctg3),
-                      mean(opt_stat_ctg10), mean(opt_stat_ionosphere), mean(opt_stat_dermatology),
-                      mean(opt_stat_aus_credit)), 4),
-  Default_sd = round(c(sd(stat_wdbc), sd(stat_iris), sd(stat_echocardiogram),
-                       sd(stat_fertility), sd(stat_wine), sd(stat_ctg3),
-                       sd(stat_ctg10), sd(stat_ionosphere), sd(stat_dermatology),
-                       sd(stat_aus_credit)), 4),
-  Optimized_sd = round(c(sd(opt_stat_wdbc), sd(opt_stat_iris), sd(opt_stat_echocardiogram),
-                      sd(opt_stat_fertility), sd(opt_stat_wine), sd(opt_stat_ctg3),
-                      sd(opt_stat_ctg10), sd(opt_stat_ionosphere), sd(opt_stat_dermatology),
-                      sd(opt_stat_aus_credit)), 4)
-)
+  Default = round(c(mean(stat_svmodt_wdbc), mean(stat_svmodt_iris), mean(stat_svmodt_echocardiogram),
+                    mean(stat_svmodt_fertility), mean(stat_svmodt_wine), mean(stat_svmodt_ctg3),
+                    mean(stat_svmodt_ctg10), mean(stat_svmodt_ionosphere), mean(stat_svmodt_dermatology),
+                    mean(stat_svmodt_aus_credit)), 4))
+  # Optimized = round(c(mean(opt_stat_wdbc), mean(opt_stat_iris), mean(opt_stat_echocardiogram),
+  #                     mean(opt_stat_fertility), mean(opt_stat_wine), mean(opt_stat_ctg3),
+  #                     mean(opt_stat_ctg10), mean(opt_stat_ionosphere), mean(opt_stat_dermatology),
+  #                     mean(opt_stat_aus_credit)), 4),
+  # Default_sd = round(c(sd(stat_wdbc), sd(stat_iris), sd(stat_echocardiogram),
+  #                      sd(stat_fertility), sd(stat_wine), sd(stat_ctg3),
+  #                      sd(stat_ctg10), sd(stat_ionosphere), sd(stat_dermatology),
+  #                      sd(stat_aus_credit)), 4),
+  # Optimized_sd = round(c(sd(opt_stat_wdbc), sd(opt_stat_iris), sd(opt_stat_echocardiogram),
+  #                     sd(opt_stat_fertility), sd(opt_stat_wine), sd(opt_stat_ctg3),
+  #                     sd(opt_stat_ctg10), sd(opt_stat_ionosphere), sd(opt_stat_dermatology),
+  #                     sd(opt_stat_aus_credit)), 4)
+#)
 comparison$Improvement <- comparison$Optimized - comparison$Default
 
 print(comparison)
